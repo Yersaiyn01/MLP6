@@ -1,0 +1,20 @@
+{
+  "checking": "A11",
+  "duration": 6,
+  "credit_history": "A34",
+  "purpose": "A43",
+  "amount": 1169,
+  "savings": "A65",
+  "employment": "A75",
+  "installment_rate": 4,
+  "other_debtors": "A101",
+  "residence_years": 4,
+  "property": "A121",
+  "other_plans": "A143",
+  "housing": "A152",
+  "existing_credits": 2,
+  "job": "A173",
+  "dependents": 1,
+  "telephone": "A192",
+  "foreign_worker": "A201"
+}
