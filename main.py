@@ -1,40 +1,47 @@
+import json
+import os
 from pathlib import Path
 
 import joblib
 import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel, ConfigDict
 
-model = joblib.load(Path(__file__).with_name("model.joblib"))
-app = FastAPI(title="German Credit ML API")
+from schemas import CreditFeatures
 
+PROJECT_DIR = Path(__file__).resolve().parent
+MODEL_PATH = Path(os.getenv("MODEL_PATH", str(PROJECT_DIR / "model.joblib"))).expanduser()
+if not MODEL_PATH.is_absolute():
+    MODEL_PATH = PROJECT_DIR / MODEL_PATH
 
-class CreditFeatures(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+model = joblib.load(MODEL_PATH)
+metadata_path = MODEL_PATH.with_name("model-info.json")
+model_info = (
+    json.loads(metadata_path.read_text())
+    if metadata_path.is_file()
+    else {
+        "model_name": "german-credit-logistic-regression",
+        "model_version": None,
+        "run_id": None,
+        "experiment_name": None,
+        "metrics": {},
+    }
+)
 
-    checking: str
-    duration: int
-    credit_history: str
-    purpose: str
-    amount: int
-    savings: str
-    employment: str
-    installment_rate: int
-    other_debtors: str
-    residence_years: int
-    property: str
-    other_plans: str
-    housing: str
-    existing_credits: int
-    job: str
-    dependents: int
-    telephone: str
-    foreign_worker: str
+app = FastAPI(
+    title="German Credit ML API",
+    description="Credit risk predictions with a model tracked and registered in MLflow.",
+)
 
 
 @app.get("/")
 def root():
     return {"message": "ML API is running"}
+
+
+@app.get("/model-info")
+def get_model_info():
+    """Describe the model loaded by this API process."""
+    return model_info
 
 
 @app.post("/predict")

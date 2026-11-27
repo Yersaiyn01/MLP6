@@ -2,4 +2,15 @@
 !Dockerfile
 !requirements.txt
 !main.py
+!schemas.py
+!frontend.py
+!train.py
+!tracking.py
 !model.joblib
+!model-info.json
+!german.data
+!example.json
+!README.md
+!compose.yaml
+!scripts/
+!scripts/**
